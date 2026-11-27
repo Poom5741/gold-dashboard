@@ -1,0 +1,318 @@
+{
+  "status": "passed",
+  "mode": "goldfish",
+  "reviewed": {
+    "path": "specs/001-gold-dashboard/playbook.md",
+    "digest": "eb6fd6d867aa872b916abf95b2e3956e50ba50cd3aad2400eb5b5e5c3a400df5"
+  },
+  "harness_subagents": true,
+  "reviewers": [
+    {
+      "id": "goldfish-1-technical",
+      "dispatch": "subagent",
+      "fresh_context": true
+    },
+    {
+      "id": "goldfish-2-adversarial",
+      "dispatch": "subagent",
+      "fresh_context": true
+    }
+  ],
+  "egm": {
+    "skill": "egm-review",
+    "source_revision": "5ba5afa03f62627639fa4f71b7ac3bd4d8d07e24",
+    "skill_digest": "ae5f33afa170dfcf0b5365377df6064fd6c4490a2e8a618b8d5c8df8c1b27f21"
+  },
+  "findings": [
+    {
+      "summary": "No Saturday collection: Sunday brief would miss Friday close and latest COT",
+      "disposition": "fixed",
+      "reason": "Adopted as design ruling D1: Saturday 07:00 refresh added; Sunday job refreshes data before generating the brief.",
+      "evidence": [
+        {
+          "path": "specs/001-gold-dashboard/plan.md",
+          "digest": "c2c204b2a571d0aeeffd284db6242eafa5067f568dd9e80b11b71d251f6c110b"
+        }
+      ]
+    },
+    {
+      "summary": "Mock CME snapshots indistinguishable from real on data branch",
+      "disposition": "fixed",
+      "reason": "Adopted as D2: provenance source=mock|real on every snapshot row; production config rejects mock; UI badges mock data.",
+      "evidence": [
+        {
+          "path": "specs/001-gold-dashboard/plan.md",
+          "digest": "c2c204b2a571d0aeeffd284db6242eafa5067f568dd9e80b11b71d251f6c110b"
+        }
+      ]
+    },
+    {
+      "summary": "Options dimension 30% weight with chronically absent OI sub-score unspecified",
+      "disposition": "fixed",
+      "reason": "Adopted as D3: explicit sub-scores (skew/IV automated; OI manual) with within-dimension weight renormalization and per-sub-score reliability.",
+      "evidence": [
+        {
+          "path": "specs/001-gold-dashboard/plan.md",
+          "digest": "c2c204b2a571d0aeeffd284db6242eafa5067f568dd9e80b11b71d251f6c110b"
+        }
+      ]
+    },
+    {
+      "summary": "Aggregate bias toward neutral when a dimension is missing (0-fill with intact weight)",
+      "disposition": "fixed",
+      "reason": "Adopted as D4: weights renormalize over present dimensions; reliability floor 0.5 suppresses bucket label to 'insufficient data'.",
+      "evidence": [
+        {
+          "path": "specs/001-gold-dashboard/plan.md",
+          "digest": "c2c204b2a571d0aeeffd284db6242eafa5067f568dd9e80b11b71d251f6c110b"
+        }
+      ]
+    },
+    {
+      "summary": "as_of-only filtering ignores publication lag (COT Friday release, FRED +1d)",
+      "disposition": "fixed",
+      "reason": "Adopted as D5: available_at column per row; engines filter as_of<=T AND available_at<=T; freshness vs publication cadence.",
+      "evidence": [
+        {
+          "path": "specs/001-gold-dashboard/plan.md",
+          "digest": "c2c204b2a571d0aeeffd284db6242eafa5067f568dd9e80b11b71d251f6c110b"
+        }
+      ]
+    },
+    {
+      "summary": "GC=F roll gaps corrupt structure metrics",
+      "disposition": "fixed",
+      "reason": "Adopted as D6: roll detection + difference-splice back-adjustment for structure metrics; roll weeks flagged.",
+      "evidence": [
+        {
+          "path": "specs/001-gold-dashboard/plan.md",
+          "digest": "c2c204b2a571d0aeeffd284db6242eafa5067f568dd9e80b11b71d251f6c110b"
+        }
+      ]
+    },
+    {
+      "summary": "Staleness limits not tied to real publication cadence (COT ~10d, FRED lag, weekly ETF)",
+      "disposition": "fixed",
+      "reason": "Adopted as D7: per-source cadence-based limits in config.",
+      "evidence": [
+        {
+          "path": "specs/001-gold-dashboard/plan.md",
+          "digest": "c2c204b2a571d0aeeffd284db6242eafa5067f568dd9e80b11b71d251f6c110b"
+        }
+      ]
+    },
+    {
+      "summary": "No missed-run recovery for in-process APScheduler",
+      "disposition": "fixed",
+      "reason": "Adopted as D8: misfire_grace_time, coalesce, startup catch-up rules.",
+      "evidence": [
+        {
+          "path": "specs/001-gold-dashboard/plan.md",
+          "digest": "c2c204b2a571d0aeeffd284db6242eafa5067f568dd9e80b11b71d251f6c110b"
+        }
+      ]
+    },
+    {
+      "summary": "One flaky collector fails the whole refresh",
+      "disposition": "fixed",
+      "reason": "Adopted as D9: refresh fan-in; failed source marked missing, job continues.",
+      "evidence": [
+        {
+          "path": "specs/001-gold-dashboard/plan.md",
+          "digest": "c2c204b2a571d0aeeffd284db6242eafa5067f568dd9e80b11b71d251f6c110b"
+        }
+      ]
+    },
+    {
+      "summary": "Actions workflow missing permissions/concurrency/UTC cron; 'raw URL token optional' wrong for private branch",
+      "disposition": "fixed",
+      "reason": "Adopted as D10: contents:write, concurrency group, UTC cron documented; GITHUB_DATA_TOKEN required for snapshot pull.",
+      "evidence": [
+        {
+          "path": "specs/001-gold-dashboard/plan.md",
+          "digest": "c2c204b2a571d0aeeffd284db6242eafa5067f568dd9e80b11b71d251f6c110b"
+        }
+      ]
+    },
+    {
+      "summary": "TPO from daily bars is an approximation presented as authoritative",
+      "disposition": "accepted-risk",
+      "reason": "Owner-frozen spec builds structure from daily bars (SPEC \u00a74.1 permits volume proxy); MVP keeps the approximation, adopted as D11: pinned VA algorithm (70% two-sided expansion from POC) + explicit 'daily-bar approximation' labeling in UI and API payloads.",
+      "evidence": [
+        {
+          "path": "specs/001-gold-dashboard/plan.md",
+          "digest": "c2c204b2a571d0aeeffd284db6242eafa5067f568dd9e80b11b71d251f6c110b"
+        }
+      ]
+    },
+    {
+      "summary": "FRED series 'DXY10Y' does not exist",
+      "disposition": "fixed",
+      "reason": "Live-verified 27 Nov 2026 (HTML error from fredgraph.csv?id=DXY10Y; DFII10/DGS10/DTWEXBGS verified working) \u2014 substituted DTWEXBGS as D18; matrix REQ-2 updated.",
+      "evidence": [
+        {
+          "path": "specs/001-gold-dashboard/matrix.md",
+          "digest": "8407cf51435b724c5e7178c3f4455a037f38a5a4d0eaf79c1120e49c520cbc40"
+        }
+      ]
+    },
+    {
+      "summary": "Missing-forever and cold-start (insufficient history) failure modes untested",
+      "disposition": "fixed",
+      "reason": "Adopted in D3/D4 semantics + REQ-13; minimum-history threshold marks history-dependent metrics 'insufficient' instead of computing garbage.",
+      "evidence": [
+        {
+          "path": "specs/001-gold-dashboard/matrix.md",
+          "digest": "8407cf51435b724c5e7178c3f4455a037f38a5a4d0eaf79c1120e49c520cbc40"
+        }
+      ]
+    },
+    {
+      "summary": "Replay not reproducible across config changes",
+      "disposition": "fixed",
+      "reason": "Adopted as D14: snapshots store bias config + SHA-256; replay uses snapshotted config; REQ-16 added.",
+      "evidence": [
+        {
+          "path": "specs/001-gold-dashboard/plan.md",
+          "digest": "c2c204b2a571d0aeeffd284db6242eafa5067f568dd9e80b11b71d251f6c110b"
+        }
+      ]
+    },
+    {
+      "summary": "Optional LLM report path unconstrained",
+      "disposition": "fixed",
+      "reason": "Adopted as D15: MVP ships no LLM client; deterministic formatting only; test asserts no network/LLM calls.",
+      "evidence": [
+        {
+          "path": "specs/001-gold-dashboard/plan.md",
+          "digest": "c2c204b2a571d0aeeffd284db6242eafa5067f568dd9e80b11b71d251f6c110b"
+        }
+      ]
+    },
+    {
+      "summary": "Manual import path unvalidated/untested",
+      "disposition": "fixed",
+      "reason": "Adopted as D16: schema+date validation, idempotent upsert, provenance manual; REQ-15 added (incl. economic calendar import, D13).",
+      "evidence": [
+        {
+          "path": "specs/001-gold-dashboard/matrix.md",
+          "digest": "8407cf51435b724c5e7178c3f4455a037f38a5a4d0eaf79c1120e49c520cbc40"
+        }
+      ]
+    },
+    {
+      "summary": "TradingView anonymous scanner fragility unaddressed",
+      "disposition": "accepted-risk",
+      "reason": "Library choice ratified by owner (decisions.md); adopted D17 mitigation: pacing + bounded backoff + graceful missing-flag degradation. Residual risk of IP-block accepted.",
+      "evidence": [
+        {
+          "path": "specs/001-gold-dashboard/plan.md",
+          "digest": "c2c204b2a571d0aeeffd284db6242eafa5067f568dd9e80b11b71d251f6c110b"
+        }
+      ]
+    },
+    {
+      "summary": "Forming daily bar at 07:00 refresh breaks reproducibility",
+      "disposition": "fixed",
+      "reason": "Adopted as D12: completed bars only; today's bar excluded from engine inputs.",
+      "evidence": [
+        {
+          "path": "specs/001-gold-dashboard/plan.md",
+          "digest": "c2c204b2a571d0aeeffd284db6242eafa5067f568dd9e80b11b71d251f6c110b"
+        }
+      ]
+    },
+    {
+      "summary": "Weekend/trading-calendar blind staleness",
+      "disposition": "fixed",
+      "reason": "Covered by D7 cadence-based limits (e.g. COT 10d, manual 14d) sized to survive weekends/holidays without alarm fatigue.",
+      "evidence": [
+        {
+          "path": "specs/001-gold-dashboard/plan.md",
+          "digest": "c2c204b2a571d0aeeffd284db6242eafa5067f568dd9e80b11b71d251f6c110b"
+        }
+      ]
+    },
+    {
+      "summary": "Economic calendar silently dropped from plan",
+      "disposition": "fixed",
+      "reason": "Adopted as D13: manual CSV import path + report question 7 answered from imported data or explicit absence; REQ-15.",
+      "evidence": [
+        {
+          "path": "specs/001-gold-dashboard/plan.md",
+          "digest": "c2c204b2a571d0aeeffd284db6242eafa5067f568dd9e80b11b71d251f6c110b"
+        }
+      ]
+    },
+    {
+      "summary": "Weak matrix controls REQ-1/5/9",
+      "disposition": "fixed",
+      "reason": "REQ-1 now requires golden-fixture equality; REQ-5 requires mobile CSS + reliability/insufficient-state rendering; REQ-9 adds provenance assertion and records the real-login untested risk explicitly as accepted-risk pending Poom's secrets.",
+      "evidence": [
+        {
+          "path": "specs/001-gold-dashboard/matrix.md",
+          "digest": "8407cf51435b724c5e7178c3f4455a037f38a5a4d0eaf79c1120e49c520cbc40"
+        }
+      ]
+    },
+    {
+      "summary": "Headline bias label not gated by reliability",
+      "disposition": "fixed",
+      "reason": "Adopted in D4: reliability floor 0.5 \u2192 headline 'insufficient data \u2014 no directional call'.",
+      "evidence": [
+        {
+          "path": "specs/001-gold-dashboard/plan.md",
+          "digest": "c2c204b2a571d0aeeffd284db6242eafa5067f568dd9e80b11b71d251f6c110b"
+        }
+      ]
+    },
+    {
+      "summary": "Playbook pre-marked implementation steps completed before evidence exists",
+      "disposition": "fixed",
+      "reason": "Playbook steps 6-11 and acceptance table reset to pending; statuses flip only when evidence files are real.",
+      "evidence": [
+        {
+          "path": "specs/001-gold-dashboard/playbook.md",
+          "digest": "eb6fd6d867aa872b916abf95b2e3956e50ba50cd3aad2400eb5b5e5c3a400df5"
+        }
+      ]
+    },
+    {
+      "summary": "Port 8600 exposed on public VPS with unauthenticated refresh endpoint",
+      "disposition": "fixed",
+      "reason": "Adopted as D19: compose binds 127.0.0.1 only; access via SSH tunnel; LAN exposure documented as explicit future accepted risk.",
+      "evidence": [
+        {
+          "path": "specs/001-gold-dashboard/plan.md",
+          "digest": "c2c204b2a571d0aeeffd284db6242eafa5067f568dd9e80b11b71d251f6c110b"
+        }
+      ]
+    },
+    {
+      "summary": "VA algorithm unspecified",
+      "disposition": "fixed",
+      "reason": "Adopted in D11: POC = max-volume proxy bucket; VA = smallest POC-centered band covering 70% of proxy volume.",
+      "evidence": [
+        {
+          "path": "specs/001-gold-dashboard/plan.md",
+          "digest": "c2c204b2a571d0aeeffd284db6242eafa5067f568dd9e80b11b71d251f6c110b"
+        }
+      ]
+    }
+  ],
+  "resolution": "25 findings adopted as binding design rulings D1-D19 in plan.md and matrix extensions REQ-13..REQ-16; 2 accepted risks (TPO daily-bar approximation with pinned algorithm + explicit labeling; TradingView anonymous-scanner fragility with pacing/backoff mitigation). Design re-frozen after fixes; both reviewers ran in fresh isolated contexts with only the design files.",
+  "evidence": [
+    {
+      "path": "specs/001-gold-dashboard/playbook.md",
+      "digest": "eb6fd6d867aa872b916abf95b2e3956e50ba50cd3aad2400eb5b5e5c3a400df5"
+    },
+    {
+      "path": "specs/001-gold-dashboard/plan.md",
+      "digest": "c2c204b2a571d0aeeffd284db6242eafa5067f568dd9e80b11b71d251f6c110b"
+    },
+    {
+      "path": "specs/001-gold-dashboard/matrix.md",
+      "digest": "8407cf51435b724c5e7178c3f4455a037f38a5a4d0eaf79c1120e49c520cbc40"
+    }
+  ]
+}

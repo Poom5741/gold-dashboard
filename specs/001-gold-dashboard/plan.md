@@ -38,4 +38,28 @@ GitHub Actions (Poom5741/gold-dashboard)         VPS (this host, docker)
 
 ## Verification strategy
 
-Matrix rows R1–R12 (specs/001-gold-dashboard/matrix.md). Baseline feedback loop = `pytest` + live `curl /api/health`; every feature lands behind a failing test first where practical (collectors/bias/structure/report/scheduler are pure-Python TDD; compose/UI verified by runtime evidence).
+Matrix rows REQ-1–REQ-12 (specs/001-gold-dashboard/matrix.md). Baseline feedback loop = `pytest` + live `curl /api/health`; every feature lands behind a failing test first where practical (collectors/bias/structure/report/scheduler are pure-Python TDD; compose/UI verified by runtime evidence).
+
+## Goldfish review design rulings (27 Nov 2026, binding for implementation)
+
+Two fresh-context goldfish reviewers stress-tested the design; the following rulings are adopted:
+
+- **D1 — schedule gap:** add Saturday 07:00 refresh (price + COT + manual imports) so the Sunday 18:00 brief uses Friday's close and the latest COT release; the Sunday job runs data refresh before report generation. Weekday specs per SPEC §7 unchanged.
+- **D2 — snapshot provenance:** every cme_snapshots row carries `source: "mock"|"real"`. Config `cme_accept_mock: false` (production) rejects mock rows; UI badges mock data. Mock fixtures never enter the real table.
+- **D3 — options dimension sub-scores:** sub-score A = skew/IV (25ΔRR, ATM IV, implied range — automated via TVdataOptionOI); sub-score B = OI positioning (manual import only). Within-dimension weights renormalize over present sub-scores; per-sub-score reliability.
+- **D4 — aggregate semantics:** dimension weights renormalize over dimensions with usable data (reliability > 0); aggregate reliability = weighted mean of dimension reliabilities; if aggregate reliability < 0.5 the headline label is "insufficient data — no directional call" instead of a bucket label.
+- **D5 — publication-aware no-look-ahead:** rows carry `as_of` (data date) AND `available_at` (earliest time the value could be known: COT release date, FRED as_of+1d, Yahoo session close). Engine filters `as_of <= T AND available_at <= T`. Freshness compares now against expected publication cadence, not retrieval time.
+- **D6 — roll handling:** detect GC=F roll gaps; back-adjust (difference splice) for structure metrics; roll weeks flagged in structure output.
+- **D7 — staleness limits per cadence (config):** yahoo 3 trading days, fred 4 calendar days, cot 10 days, tv options 3 days, manual 14 days, calendar 30 days.
+- **D8 — scheduler recovery:** misfire_grace_time=3600, coalesce=True, startup catch-up (weekly brief older than 8 days or daily bias older than 2 days → regenerate on boot).
+- **D9 — refresh fan-in:** each collector failure marks that source missing (freshness=missing, reliability impact) and the refresh continues; only an all-collectors failure fails the job.
+- **D10 — workflow hygiene:** cme-collector.yml sets `permissions: contents: write`, a `concurrency: cme-collector` group, UTC cron (documented Asia/Bangkok equivalents), real run gated on both secrets present. Backend snapshot pull REQUIRES a token for a private data branch (`GITHUB_DATA_TOKEN` env); no "token optional".
+- **D11 — TPO approximation labeling:** value-area algorithm pinned: POC = daily-bar volume-proxy price bucket with max volume; VA = smallest band around POC covering 70% of proxy volume (two-sided expansion). UI labels POC/VAH/VAL "daily-bar approximation".
+- **D12 — completed bars only:** engine inputs exclude any bar dated today (exchange time) — forming bars never enter metrics.
+- **D13 — economic calendar:** manual CSV import path (date, time, event, impact); weekly report question 7 answered from imported calendar, else explicitly "calendar data not imported".
+- **D14 — snapshot reproducibility:** each bias snapshot stores the full bias config (weights/thresholds/floors) + SHA-256 of it; replay uses the snapshotted config, never live config.
+- **D15 — report generator deterministic-only:** MVP ships no LLM client at all; report.py formats engine metrics. Test asserts no network/LLM calls and numbers identical to engine output.
+- **D16 — manual import validation:** schema + date sanity checks, idempotent upsert keyed (source, series, date), provenance `source: "manual"`.
+- **D17 — TradingView fragility:** request pacing + bounded retries/backoff in tvdataoption collector; on failure the options skew sub-score is flagged missing (reliability impact), never fabricated.
+- **D18 — FRED series substitution:** `DXY10Y` does not exist on FRED (live-verified 27 Nov 2026: returns HTML error; DFII10/DGS10/DTWEXBGS verified live) → use **DTWEXBGS** (Broad US Dollar Index, daily) as the FRED dollar series; DXY spot still from Yahoo (DX-Y.NYB).
+- **D19 — network exposure:** compose binds ports to 127.0.0.1 on the host; access via SSH tunnel. Documented accepted risk if Poom wants LAN exposure.

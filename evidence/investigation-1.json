@@ -1,0 +1,160 @@
+{
+  "base_sha": "2017cd9328ce2e2cf7bb3a33d18b7cc54af64c9b",
+  "playbook": "feature",
+  "playbook_digest": "3a62cc4a8cbcf144bb9dd05f05420a15be0d38b784d3b141bb730a5852f50a62",
+  "intent": "Build and deploy the Gold Weekly Intelligence Dashboard MVP per owner-frozen SPEC.md: FastAPI backend with free-source collectors, 5-dimension bias engine with visible reliability, TPO/POC/VAH/VAL/VWAP/regime market structure from daily bars, Nuxt 3 single-page dashboard, scheduled reports (Asia/Bangkok), SQLite persistence, CME browser collector workflow for GitHub Actions with dry-run/mock mode, pytest coverage including no-look-ahead.",
+  "flow": "Entry point: FastAPI HTTP API (/api/*) called by Nuxt 3 frontend and by APScheduler jobs in-process. Collectors (yahoo, fred, cftc, tvdataoption, cme_snapshots, manual_import) write typed rows + as_of into SQLite via store.py. Engine (structure.py, bias.py, report.py) reads only rows <= as_of and emits metrics + reliability. Scheduler triggers refresh+bias+report per SPEC section 7 cron. CME snapshots arrive out-of-band via GitHub Actions commits to the data branch, pulled by cme_snapshots collector.",
+  "scope_rationale": "Micro route: spec, decisions and architecture are already frozen and ratified by the owner (SPEC.md verbatim + decisions.md); no open consequential scope. Owner-mandated flow (spec -> tasks -> implement one checkout -> independent QA in disposable clone) maps to playbook+matrix with compact convergence.",
+  "unknowns": [
+    "Exact Yahoo/FRED/CFTC response schemas drift over time -> collectors normalize defensively and tests use recorded fixtures",
+    "Nuxt build memory on shared 8GB VPS -> mitigate with NODE_OPTIONS max-old-space-size and static build"
+  ],
+  "conventions": [
+    {
+      "id": "C1-no-look-ahead",
+      "rule": "Engine functions take as_of and may only read rows with timestamp <= as_of",
+      "scope": "backend/app/engine/*",
+      "source": "specs/001-gold-dashboard/spec.md",
+      "plan_application": "plan.md Data correctness rules + tests/test_no_look_ahead.py"
+    },
+    {
+      "id": "C2-stale-not-neutral",
+      "rule": "Missing or stale data reduces dimension reliability visibly; never silently neutral",
+      "scope": "backend/app/engine/bias.py, API payloads, UI",
+      "source": "specs/001-gold-dashboard/spec.md",
+      "plan_application": "bias engine reliability field + data_freshness flags in every API payload"
+    },
+    {
+      "id": "C3-no-cme-scrape-from-vps",
+      "rule": "CME data only via GitHub Actions browser collector; never scrape from the VPS (403 IP block + ToU)",
+      "scope": "collectors, workflows",
+      "source": "specs/001-gold-dashboard/decisions.md",
+      "plan_application": "cme_snapshots.py only pulls committed JSON from data branch; workflow runs on GH Actions"
+    },
+    {
+      "id": "C4-no-copy-unlicensed",
+      "rule": "Gold-Sight-by-OI and xau-oi-lab have no license: approach reference only, zero code copying",
+      "scope": "whole repo",
+      "source": "specs/001-gold-dashboard/decisions.md",
+      "plan_application": "all code written from scratch; only TVdataOptionOI (MIT) used as dependency"
+    },
+    {
+      "id": "C5-llm-no-math",
+      "rule": "Weekly report text is formatted from engine-computed metrics; no LLM computes scores",
+      "scope": "backend/app/engine/report.py",
+      "source": "specs/001-gold-dashboard/spec.md",
+      "plan_application": "report.py pure string formatting of engine outputs"
+    }
+  ],
+  "unresolved_blockers": [],
+  "evidence": [
+    {
+      "path": "specs/001-gold-dashboard/spec.md",
+      "digest": "1694798fc4df8ba1a2984494ac1161a3d6065bf4a298446e314b76bc04d89f9a"
+    },
+    {
+      "path": "specs/001-gold-dashboard/decisions.md",
+      "digest": "38c515755a45f9ff7e0cdaaaaa6bace30419238557fad43cb137ad4723d8e840"
+    },
+    {
+      "path": "specs/001-gold-dashboard/research-sources.md",
+      "digest": "5deaeaf90ac7b0d5adb428d8a4fd792583eabb97832ccdb68d7266afc7be3670"
+    },
+    {
+      "path": "specs/001-gold-dashboard/matrix.md",
+      "digest": "8407cf51435b724c5e7178c3f4455a037f38a5a4d0eaf79c1120e49c520cbc40"
+    }
+  ],
+  "steps": [
+    {
+      "id": "step-1",
+      "source_step": "1",
+      "status": "completed",
+      "evidence": [
+        {
+          "path": "specs/001-gold-dashboard/spec.md",
+          "digest": "1694798fc4df8ba1a2984494ac1161a3d6065bf4a298446e314b76bc04d89f9a"
+        },
+        {
+          "path": "specs/001-gold-dashboard/decisions.md",
+          "digest": "38c515755a45f9ff7e0cdaaaaa6bace30419238557fad43cb137ad4723d8e840"
+        },
+        {
+          "path": "specs/001-gold-dashboard/research-sources.md",
+          "digest": "5deaeaf90ac7b0d5adb428d8a4fd792583eabb97832ccdb68d7266afc7be3670"
+        },
+        {
+          "path": "specs/001-gold-dashboard/matrix.md",
+          "digest": "8407cf51435b724c5e7178c3f4455a037f38a5a4d0eaf79c1120e49c520cbc40"
+        }
+      ],
+      "reason": null
+    },
+    {
+      "id": "step-2",
+      "source_step": "2",
+      "status": "completed",
+      "evidence": [
+        {
+          "path": "specs/001-gold-dashboard/spec.md",
+          "digest": "1694798fc4df8ba1a2984494ac1161a3d6065bf4a298446e314b76bc04d89f9a"
+        },
+        {
+          "path": "specs/001-gold-dashboard/decisions.md",
+          "digest": "38c515755a45f9ff7e0cdaaaaa6bace30419238557fad43cb137ad4723d8e840"
+        },
+        {
+          "path": "specs/001-gold-dashboard/research-sources.md",
+          "digest": "5deaeaf90ac7b0d5adb428d8a4fd792583eabb97832ccdb68d7266afc7be3670"
+        },
+        {
+          "path": "specs/001-gold-dashboard/matrix.md",
+          "digest": "8407cf51435b724c5e7178c3f4455a037f38a5a4d0eaf79c1120e49c520cbc40"
+        }
+      ],
+      "reason": null
+    },
+    {
+      "id": "step-3",
+      "source_step": "3",
+      "status": "pending",
+      "evidence": [],
+      "reason": null
+    },
+    {
+      "id": "step-4",
+      "source_step": "4",
+      "status": "pending",
+      "evidence": [],
+      "reason": null
+    },
+    {
+      "id": "step-5",
+      "source_step": "5",
+      "status": "pending",
+      "evidence": [],
+      "reason": null
+    },
+    {
+      "id": "step-6",
+      "source_step": "6",
+      "status": "pending",
+      "evidence": [],
+      "reason": null
+    },
+    {
+      "id": "step-7",
+      "source_step": "7",
+      "status": "pending",
+      "evidence": [],
+      "reason": null
+    },
+    {
+      "id": "step-8",
+      "source_step": "8",
+      "status": "pending",
+      "evidence": [],
+      "reason": null
+    }
+  ]
+}

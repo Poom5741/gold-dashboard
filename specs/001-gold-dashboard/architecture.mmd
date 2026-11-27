@@ -1,0 +1,13 @@
+flowchart LR
+  U[User browser] --> FE[Nuxt 3 static frontend :8600]
+  FE -->|/api proxy| BE[FastAPI backend]
+  BE --> COL[Collectors: yahoo/fred/cftc/tvdataoption/cme_snapshots/manual]
+  BE --> ENG[Engine: structure/bias/report]
+  BE --> DB[(SQLite WAL)]
+  SCH[APScheduler Asia/Bangkok cron] --> BE
+  GH[GitHub Actions cme-collector] -->|commit JSON| DBR[(data branch)]
+  COL -->|raw pull| DBR
+  Y[Yahoo] --> COL
+  F[FRED] --> COL
+  C[CFTC] --> COL
+  TV[TradingView via TVdataOptionOI] --> COL

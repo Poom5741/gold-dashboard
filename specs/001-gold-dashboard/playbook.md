@@ -7,7 +7,7 @@ Affected people and success signal: Poom (sole user) opens the dashboard on his 
 Non-goals: automated trade execution, real-time tick streaming, paid feeds, ML prediction, broker integration, position management (SPEC §10).
 Route and escalation triggers: micro (playbook + matrix, compact convergence). Escalate to native planning only if unresolved consequential scope or cross-boundary design appears (none expected — DECISIONS.md closed all open questions).
 Selected pinned playbook: ask-super-speckit playbook-delivery (micro route), PStack investigate/implement methods as lenses.
-Completion predicate: every matrix row R1–R12 verified with real runtime evidence; independent QA in a disposable clone passes; convergence receipt recorded.
+Completion predicate: every matrix row REQ-1–REQ-12 verified with real runtime evidence; independent QA in a disposable clone passes; convergence receipt recorded.
 Authority, budget and limits: single checkout /root/workspace/gold-dashboard; deploy on this VPS via docker compose on a free port (chosen: 8600); no scraping CME from VPS; no touching rakazo containers/pgdata; no copying code from unlicensed repos; CME secrets never requested.
 
 ## Steps
@@ -19,12 +19,12 @@ Authority, budget and limits: single checkout /root/workspace/gold-dashboard; de
 | 3. Plan + tasks | 2 | dev | completed | specs/001-gold-dashboard/plan.md, tasks.md |
 | 4. Learning checkpoint + goldfish review | 3 | dev + 2 fresh subagents | completed | evidence/learn-1.json, evidence/goldfish-1.json |
 | 5. Personas selected | 4 | dev | completed | .super-speckit state via select-personas |
-| 6. Implement (backend, collectors, bias engine, frontend, workflows, compose, tests) | 5 | dev | completed | git candidate commit |
-| 7. Self-verification (pytest, compose up, curl) | 6 | dev | completed | evidence/self-verify.md |
-| 8. Independent QA in disposable clone | 7 | independent QA subagent | completed | evidence/qa-independent.md |
-| 9. Lenses (pstack + lude specialist) + reconciliation | 8 | dev | completed | evidence/lenses-1.json |
-| 10. Compact convergence | 9 | dev | completed | evidence/convergence-1.json |
-| 11. Release: push GitHub, deploy VPS, evidence pack | 10 | dev | completed | evidence/release-1.md |
+| 6. Implement (backend, collectors, bias engine, frontend, workflows, compose, tests) | 5 | dev | pending | — |
+| 7. Self-verification (pytest, compose up, curl) | 6 | dev | pending | — |
+| 8. Independent QA in disposable clone | 7 | independent QA subagent | pending | — |
+| 9. Lenses (pstack + lude specialist) + reconciliation | 8 | dev | pending | — |
+| 10. Compact convergence | 9 | dev | pending | — |
+| 11. Release: push GitHub, deploy VPS, evidence pack | 10 | dev | pending | — |
 
 ## Research and architecture
 
@@ -38,7 +38,7 @@ Narrow exceptions and review: CME collector on VPS is forbidden (403 + ToU) — 
 
 | Requirement ID | User journey or public seam | Expected observation | Evidence | Status |
 | --- | --- | --- | --- | --- |
-| R1–R12 | see specs/001-gold-dashboard/matrix.md | every row's control passes with real runtime output | evidence/qa-independent.md + evidence/self-verify.md | pass |
+| REQ-1–REQ-12 | see specs/001-gold-dashboard/matrix.md | every row's control passes with real runtime output | evidence/qa-independent.md + evidence/self-verify.md | pass |
 
 Independent engineering review and findings/dispositions: recorded in evidence/qa-independent.md and evidence/lenses-1.json (dispositions fixed/accepted-risk/dismissed with reasons).
 Relevant usability coverage and non-applicable rationales: single-user internal tool; mobile-friendly single page verified via HTML/viewport checks; no multi-user auth in scope (VPS-local).

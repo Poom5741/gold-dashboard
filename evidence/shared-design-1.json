@@ -1,0 +1,22 @@
+{
+  "investigation_digest": "92db1191b6ec007c635bde7174ab0799e5e7ee0cfe97e766f06461e486cc5c12",
+  "observed": "Free data sources verified live from this VPS (research-sources.md): Yahoo GC=F/DXY, FRED no-key CSV, CFTC disaggregated COT code 088691, TVdataOptionOI chain with IV/delta but OI=None; CME direct 403+ToU so browser collector must run on GitHub Actions; repo greenfield (single commit of spec artifacts). Goldfish review (2 fresh subagents) found 28 distinct findings; 25 adopted as design rulings D1-D19 in plan.md, 3 accepted risks (TPO daily-bar approximation, TradingView anonymous-scanner fragility, CME real login path untested until Poom adds secrets). FRED DXY10Y verified non-existent; substituted DTWEXBGS (live-verified).",
+  "proposed": "Compose stack on VPS port 8600: FastAPI backend (collectors in-process, SQLite WAL, APScheduler Asia/Bangkok cron) + Nuxt 3 static frontend proxying /api. Bias engine: 5 weighted dimensions from config/bias.yaml, aggregate -100..+100, per-dimension reliability 0..1 that visibly drops for stale/missing data. CME snapshots via Actions -> data branch -> cme_snapshots puller. Weekly report = pure formatting of engine metrics.",
+  "invariants": [
+    "no look-ahead: engines filter as_of <= T AND available_at <= T (publication-aware)",
+    "stale/missing reduces reliability visibly; weights renormalize over present dimensions; label suppressed below reliability floor (never silent neutral)",
+    "no CME scraping from VPS; CME snapshots carry mock|real provenance; prod rejects mock",
+    "no code copied from unlicensed repos; only TVdataOptionOI (MIT) as dependency",
+    "no secrets committed; compose binds 127.0.0.1 only",
+    "report generator deterministic-only: formats engine metrics, no LLM, no network"
+  ],
+  "verification_plan": "pytest (collectors mocked, bias golden fixtures, structure hand-computed, no-look-ahead, scheduler crons, report numbers == engine numbers, snapshot replay) + runtime evidence: docker compose up, curl /api/health,/api/bias,/api/report/weekly,/api/snapshots; independent QA in disposable clone. Matrix extended REQ-13..REQ-16 (renormalization+floor, roll adjustment, manual import validation, snapshot config reproducibility).",
+  "view": {
+    "renderer": "mermaid",
+    "source": "specs/001-gold-dashboard/spec.md",
+    "source_digest": "1694798fc4df8ba1a2984494ac1161a3d6065bf4a298446e314b76bc04d89f9a",
+    "artifact": "specs/001-gold-dashboard/architecture.mmd",
+    "artifact_digest": "385ecf60594b3be3400372ff952062d8c09cf78ba37d9fc335cebce30857f157",
+    "limitation": "Static mermaid diagram hand-maintained; no Archify renderer available in this harness \u2014 limitation disclosed per fallback contract"
+  }
+}

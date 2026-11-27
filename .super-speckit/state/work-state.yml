@@ -12,7 +12,7 @@ features:
     purpose_map: ".super-speckit/purpose/001-gold-dashboard/purpose-map.md"
     grill_status: "not_started"
     grill_artifact: null
-    route: "unclassified"
+    route: "micro"
     atlas: null
     change_story: null
     latest_handoff: null

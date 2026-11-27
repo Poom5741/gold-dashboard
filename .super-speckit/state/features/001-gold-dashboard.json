@@ -21,8 +21,8 @@
     "artifact": null
   },
   "route": {
-    "kind": "unclassified",
-    "rationale": null
+    "kind": "micro",
+    "rationale": "Canonical spec frozen by owner; all decisions closed in decisions.md; micro playbook+matrix route matches owner-mandated flow (spec -> tasks -> implement one checkout -> independent QA in disposable clone)"
   },
   "atlas": {
     "path": null
@@ -51,15 +51,15 @@
   "delivery_contract": "knowledge-v2",
   "gates_contract": "discipline-v1",
   "schema_version": 2,
-  "revision": 7,
+  "revision": 16,
   "prerequisite_receipts": {
     "investigation": {
-      "artifact": "specs/001-gold-dashboard/research-sources.md",
-      "digest": "5deaeaf90ac7b0d5adb428d8a4fd792583eabb97832ccdb68d7266afc7be3670"
+      "artifact": "evidence/investigation-1.json",
+      "digest": "0856860245666a1a674d3e4c7b1e829810aff1aeecd24cd235a83c691da1aeab"
     },
     "phase-contract": {
       "artifact": "specs/001-gold-dashboard/phase-contract-P1.md",
-      "digest": "425eacb26012a190928ff4fa2bc585a941cf6d4febdcde45e155a75fe3214e0c"
+      "digest": "52938966ce07e7840a3b3f298269bd5d128d98fcc19b54feff3e5be4ad7e8171"
     },
     "research": {
       "artifact": "specs/001-gold-dashboard/research-sources.md",
@@ -68,6 +68,14 @@
     "baseline-feedback": {
       "artifact": "specs/001-gold-dashboard/baseline-feedback.md",
       "digest": "4a9eee8f03ebccf1ad87d15725db8b0da302a2f29b4cd5ee302b0067d51c28c2"
+    },
+    "shared-design": {
+      "artifact": "evidence/shared-design-1.json",
+      "digest": "28cc116f572aebbe6e4c11b9bbbe3d6158e3b0c39b4fc72b2480a01f910cfbf1"
+    },
+    "learning-checkpoint": {
+      "artifact": "evidence/learn-1.json",
+      "digest": "0869c449f9f9eb11042d4d5ef1feff145782fac16b8d7efa0bc2e73e2ef96f48"
     }
   }
 }

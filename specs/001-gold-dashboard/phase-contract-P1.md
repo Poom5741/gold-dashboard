@@ -4,7 +4,7 @@
 A deployed dashboard on Poom's VPS: docker compose up brings up backend+frontend; the API exposes bias with visible evidence and freshness flags; weekly brief text generated from computed metrics; pytest suite green including no-look-ahead.
 
 ## Native Spec Kit links
-- Specification requirement IDs: R1–R12 (specs/001-gold-dashboard/matrix.md)
+- Specification requirement IDs: REQ-1–REQ-12 (specs/001-gold-dashboard/matrix.md)
 - Plan section: specs/001-gold-dashboard/plan.md
 - Task IDs: T1–T15 (specs/001-gold-dashboard/tasks.md)
 

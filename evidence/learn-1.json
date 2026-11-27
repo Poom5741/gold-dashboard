@@ -1,0 +1,45 @@
+{
+  "status": "engaged",
+  "level": "intermediate",
+  "purpose_digest": "6effa5d470ad73e5f68824dcda615db5cbc0d6e7dc9d40c27788173453956bb7",
+  "vibe": {
+    "skill": "learn",
+    "source_revision": "eefb53df406ab89e31444684ff32c1df205221f8",
+    "skill_digest": "b65405a8874d588a16b59b57cd29aa0d02298993ef4d586c2a39bce315e9d0df"
+  },
+  "checkpoints": [
+    {
+      "topic": "approach",
+      "human": "Poom",
+      "ts": "2026-11-27T00:00:00+07:00",
+      "summary": "Poom's own recorded reasoning (specs/001-gold-dashboard/decisions.md, ratified 27 Nov 2026): free-source collectors run in-process on the VPS (Yahoo, FRED, CFTC, TVdataOptionOI); CME data cannot be scraped from the VPS (403 IP block + ToU), so the CME collector must be browser automation (Playwright) on GitHub Actions using his own free CME account, committing JSON snapshots to a data branch that the backend pulls. He accepted the CME ToU risk himself and decided secrets (CME_EMAIL/CME_PASSWORD) are added by him later \u2014 worker must ship dry-run/mock mode instead.",
+      "agent_role": "feedback and concept explanations only"
+    },
+    {
+      "topic": "design",
+      "human": "Poom",
+      "ts": "2026-11-27T00:00:00+07:00",
+      "summary": "Poom authored SPEC.md verbatim (canonical design): FastAPI + SQLite backend, Nuxt 3 + TypeScript single-page mobile dashboard, TradingView Lightweight Charts + Apache ECharts, APScheduler Asia/Bangkok schedules (Sun 18:00 brief, weekdays 07:00 macro+price, 14:00 options+bias), 5-dimension weighted bias engine (30/30/20/15/5, thresholds +-60/+-20, configurable, research hypotheses not validated params) where missing/stale data reduces reliability visibly, Docker Compose deployment, LLM optional for prose only and never computes numbers.",
+      "agent_role": "feedback and concept explanations only"
+    }
+  ],
+  "authorization": {
+    "human": "Poom",
+    "ts": "2026-11-27T00:00:00+07:00",
+    "scope": "Implement the full MVP scope of kanban card t_d058408b in repo gold-dashboard (backend, collectors, bias engine, frontend, docker compose, CME Actions workflow with dry-run/mock, tests), deploy on the VPS on a free port, push to GitHub Poom5741/gold-dashboard"
+  },
+  "evidence": [
+    {
+      "path": "specs/001-gold-dashboard/decisions.md",
+      "digest": "38c515755a45f9ff7e0cdaaaaa6bace30419238557fad43cb137ad4723d8e840"
+    },
+    {
+      "path": "specs/001-gold-dashboard/spec.md",
+      "digest": "1694798fc4df8ba1a2984494ac1161a3d6065bf4a298446e314b76bc04d89f9a"
+    },
+    {
+      "path": "specs/001-gold-dashboard/plan.md",
+      "digest": "4ade4a44057351826df065b1feb5de294bed2019af87e7f9b2e1dcb2f4854bfb"
+    }
+  ]
+}
