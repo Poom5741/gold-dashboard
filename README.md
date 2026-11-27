@@ -52,12 +52,23 @@ curl -X POST localhost:8600/api/import/oi --data 'date,strike,call_oi,put_oi
 
 ## CME collector
 
-`.github/workflows/cme-collector.yml` runs browser automation on GitHub Actions
-only (never from the VPS — CME 403-blocks datacenter IPs and ToU forbids
-scraping). Default mode is mock (provenance `"mock"`; the production backend
-rejects mock snapshots). Real mode activates automatically once Poom adds
-`CME_EMAIL` / `CME_PASSWORD` repo secrets — verify selectors on the first real
-run (documented accepted risk).
+The CME browser collector runs on **GitHub Actions only** (never from the VPS —
+CME 403-blocks datacenter IPs and ToU forbids scraping). Default mode is mock
+(provenance `"mock"`; the production backend rejects mock snapshots). Real mode
+activates automatically once Poom adds `CME_EMAIL` / `CME_PASSWORD` repo
+secrets — verify selectors on the first real run (documented accepted risk).
+
+**Workflow install (one-time):** the file ships at
+`cme_collector/cme-collector.workflow.yml` because the automation token used
+for this push lacks the `workflow` scope GitHub requires before it may create
+`.github/workflows/*`. Install it with either:
+
+```bash
+mkdir -p .github/workflows && cp cme_collector/cme-collector.workflow.yml .github/workflows/cme-collector.yml && git add .github && git commit -m "install cme collector workflow" && git push
+```
+
+or by uploading the file via the GitHub web UI (Add file → Create new file →
+`.github/workflows/cme-collector.yml`), then add the two secrets.
 
 ## Bias engine
 
