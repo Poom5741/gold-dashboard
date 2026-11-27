@@ -51,11 +51,11 @@
   "delivery_contract": "knowledge-v2",
   "gates_contract": "discipline-v1",
   "schema_version": 2,
-  "revision": 16,
+  "revision": 21,
   "prerequisite_receipts": {
     "investigation": {
       "artifact": "evidence/investigation-1.json",
-      "digest": "0856860245666a1a674d3e4c7b1e829810aff1aeecd24cd235a83c691da1aeab"
+      "digest": "92db1191b6ec007c635bde7174ab0799e5e7ee0cfe97e766f06461e486cc5c12"
     },
     "phase-contract": {
       "artifact": "specs/001-gold-dashboard/phase-contract-P1.md",
@@ -71,11 +71,19 @@
     },
     "shared-design": {
       "artifact": "evidence/shared-design-1.json",
-      "digest": "28cc116f572aebbe6e4c11b9bbbe3d6158e3b0c39b4fc72b2480a01f910cfbf1"
+      "digest": "25fe71306c1022df1116b8742773e07535d9afd5c4ddc00fc24a0af7fa9cfaff"
     },
     "learning-checkpoint": {
       "artifact": "evidence/learn-1.json",
-      "digest": "0869c449f9f9eb11042d4d5ef1feff145782fac16b8d7efa0bc2e73e2ef96f48"
+      "digest": "f87da984d0d683a0b3b7ea9e721fd9091bcd878cc14c9dc1774b88cca1a8ff9c"
+    },
+    "goldfish-review": {
+      "artifact": "evidence/goldfish-1.json",
+      "digest": "9518fb316ac328d102df74d82634633721c9b6f304aed0183e107e2a4de8b27d"
+    },
+    "personas": {
+      "artifact": ".super-speckit/pipeline/001-gold-dashboard/personas.json",
+      "digest": "5544168e2fdc662c8aae9c59301a01af2d7f82122adf71b9c3b3dd3fa10606b6"
     }
   }
 }

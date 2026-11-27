@@ -1,0 +1,31 @@
+{
+  "route": "micro",
+  "maker": "dev (Hermes, python/backend)",
+  "primary_persona": "senior-backend-engineer",
+  "rationale": "FastAPI collectors + bias engine + SQLite are backend/data engineering; python-expert for idiomatic FastAPI/pytest; data engineer for schema/no-look-ahead/publication semantics",
+  "intent": {
+    "specs/001-gold-dashboard/matrix.md": "8407cf51435b724c5e7178c3f4455a037f38a5a4d0eaf79c1120e49c520cbc40",
+    "specs/001-gold-dashboard/playbook.md": "eb6fd6d867aa872b916abf95b2e3956e50ba50cd3aad2400eb5b5e5c3a400df5"
+  },
+  "source_revision": "b41c7a6a40c4960d687779227137b25be585ef55",
+  "specialists": [
+    {
+      "id": "senior-backend-engineer",
+      "category": "personas",
+      "source": "skills/personas/senior-backend-engineer/SKILL.md",
+      "sha256": "156e9b61d874ebdc701f6c9442446ac78bb5f0082bb21a3f5230564b037152a0"
+    },
+    {
+      "id": "python-expert",
+      "category": "stacks",
+      "source": "skills/stacks/python-expert/SKILL.md",
+      "sha256": "25c8e4d50d70bbbcade216547f4245618e81d065718db2ae5e488da22c55ca2d"
+    },
+    {
+      "id": "senior-data-engineer",
+      "category": "personas",
+      "source": "skills/personas/senior-data-engineer/SKILL.md",
+      "sha256": "34e85dfad60fdd930fd72101746ead7964cdf5574264eb83122cb9eb6ebbbc6c"
+    }
+  ]
+}
