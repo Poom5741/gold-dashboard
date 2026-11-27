@@ -3,7 +3,7 @@ authority: files-and-commands
 generated_from: .super-speckit/state/features/*.json
 features:
   - id: "001-gold-dashboard"
-    state: "planned"
+    state: "maker_running"
     candidate_sha: null
     maker: "dev (Hermes, python/backend)"
     checker: "independent QA subagent (fresh context)"

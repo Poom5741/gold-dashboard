@@ -1,0 +1,33 @@
+services:
+  backend:
+    build: ./backend
+    container_name: gold-backend
+    restart: unless-stopped
+    volumes:
+      - gold_data:/data
+    environment:
+      - GOLD_DB_PATH=/data/gold.db
+      - GOLD_SCHEDULER=${GOLD_SCHEDULER:-true}
+      - CME_ACCEPT_MOCK=${CME_ACCEPT_MOCK:-false}
+      - GITHUB_DATA_TOKEN=${GITHUB_DATA_TOKEN:-}
+      - GITHUB_DATA_REPO=${GITHUB_DATA_REPO:-Poom5741/gold-dashboard}
+      - GITHUB_DATA_BRANCH=${GITHUB_DATA_BRANCH:-data}
+    ports:
+      - "127.0.0.1:8600:8000"    # D19: host-local binding only; access via SSH tunnel
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request;urllib.request.urlopen('http://localhost:8000/api/health')"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+  frontend:
+    build: ./frontend
+    container_name: gold-frontend
+    restart: unless-stopped
+    depends_on:
+      - backend
+    ports:
+      - "127.0.0.1:8601:3000"    # D19: host-local binding only
+
+volumes:
+  gold_data:

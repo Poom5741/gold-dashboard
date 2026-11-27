@@ -1,0 +1,13 @@
+{
+  "tenor": "GC1!",
+  "source": "mock",
+  "oi_by_strike": [
+    {"strike": 3900, "call_oi": 1200, "put_oi": 3400},
+    {"strike": 3950, "call_oi": 1800, "put_oi": 4100},
+    {"strike": 4000, "call_oi": 5200, "put_oi": 6300},
+    {"strike": 4050, "call_oi": 4600, "put_oi": 2200},
+    {"strike": 4100, "call_oi": 6100, "put_oi": 1500},
+    {"strike": 4150, "call_oi": 3300, "put_oi": 900}
+  ],
+  "vol2vol": {"atm_iv": 18.4, "rr25": 1.2, "expected_range": {"low": 3920, "high": 4105}}
+}

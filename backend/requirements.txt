@@ -1,0 +1,8 @@
+fastapi>=0.115
+uvicorn>=0.30
+httpx>=0.27
+yfinance>=0.2.40
+pandas>=2.2
+APScheduler>=3.10,<4
+PyYAML>=6.0
+tvdataoption @ git+https://github.com/Hewkaw02/TVdataOptionOI.git

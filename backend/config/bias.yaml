@@ -1,0 +1,60 @@
+# Bias engine configuration — research hypotheses, NOT validated parameters (SPEC §5).
+# All weights/thresholds/floors are configurable and stored into each bias snapshot
+# (config + SHA-256) so historical replay is reproducible (D14).
+
+dimensions:
+  structure:
+    weight: 0.30
+  options:
+    weight: 0.30
+    sub_weights:          # renormalized over present sub-scores (D3)
+      skew: 0.6           # 25d risk reversal / ATM IV / implied range (automated)
+      oi: 0.4             # OI positioning (manual import only in MVP)
+  macro:
+    weight: 0.20
+  cot:
+    weight: 0.15
+  etf:
+    weight: 0.05
+
+thresholds:
+  strong_bull: 60         # aggregate >= +60
+  bull: 20                # >= +20
+  bear: -20
+  strong_bear: -60
+  reliability_floor: 0.5  # below this the headline label becomes "insufficient data" (D4)
+  min_history_days: 20    # history-dependent metrics below this are "insufficient" (cold start)
+
+# score caps per input signal (each raw signal is squashed through tanh-like scaling)
+scaling:
+  rr_scale: 0.5           # 25d RR / scale -> score contribution
+  yield_scale: 0.25       # change in yields (pct pts) -> score
+  dxy_scale: 0.5          # pct change in DXY -> score (inverted)
+  cot_pct_scale: 40.0     # net MM positioning percentile -> score
+  cot_change_scale: 30000 # weekly net change in contracts -> score
+  etf_flow_scale: 10.0    # tonnes net flow -> score
+  trend_efficiency: 0.6   # directional efficiency above which week counts as trending
+  trend_move_atr: 1.5     # net weekly move / ATR(5d) above which = trend
+  compression_range_atr: 1.0
+  roll_gap_pct: 1.5       # |open/prev_close - 1| above which a bar boundary is a suspected roll (D6)
+
+# freshness: allowed age (in the source's own cadence units) before flagging stale (D7)
+staleness_days:
+  yahoo: 3                # trading days
+  fred: 4                 # calendar days
+  cot: 10                 # calendar days (weekly release with ~3d lag)
+  tv_options: 3
+  manual: 14
+  calendar: 30
+
+scheduler:                # Asia/Bangkok; UTC-cron equivalents documented in workflow (D1, SPEC §7)
+  weekly_brief: {day_of_week: sun, hour: 18, minute: 0}
+  macro_price: {day_of_week: "mon-fri,sat", hour: 7, minute: 0}
+  options_bias: {day_of_week: "mon-fri", hour: 14, minute: 0}
+  catchup:
+    weekly_brief_max_age_days: 8
+    daily_bias_max_age_days: 2
+
+cme:
+  accept_mock: false      # production rejects mock-provenance snapshots (D2)
+  # GITHUB_DATA_TOKEN env var is REQUIRED to pull the private data branch (D10)

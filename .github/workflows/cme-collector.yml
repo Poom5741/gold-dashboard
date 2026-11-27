@@ -1,0 +1,83 @@
+name: CME options collector (browser automation)
+
+# Runs ONLY here (GitHub Actions) — never on the VPS: CME 403-blocks datacenter
+# IPs and ToU forbids scraping (DECISIONS.md). Poom adds CME_EMAIL/CME_PASSWORD
+# repo secrets later; until then the workflow runs in dry-run/mock mode and
+# commits a provenance-tagged mock fixture (source: "mock" — production backend
+# rejects mock snapshots, D2).
+
+on:
+  schedule:
+    # UTC cron (Actions has no timezone support) — 23:00 UTC = 06:00 Bangkok,
+    # after COMEX close, before the 07:00 Bangkok refresh.
+    - cron: "0 23 * * 1-5"
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: "mock (dry-run) | real (requires secrets)"
+        required: true
+        default: "mock"
+
+permissions:
+  contents: write          # needed to commit snapshot JSON to the data branch
+
+concurrency:
+  group: cme-collector     # never race two runs onto the same branch commit
+  cancel-in-progress: false
+
+jobs:
+  collect:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install Playwright
+        run: |
+          pip install playwright httpx
+          playwright install --with-deps chromium
+
+      - name: Decide mode
+        id: mode
+        run: |
+          if [ "${{ github.event_name }}" = "schedule" ] && \
+             [ -n "${{ secrets.CME_EMAIL }}" ] && [ -n "${{ secrets.CME_PASSWORD }}" ]; then
+            echo "mode=real" >> "$GITHUB_OUTPUT"
+          elif [ "${{ github.event.inputs.mode }}" = "real" ] && \
+               [ -n "${{ secrets.CME_EMAIL }}" ] && [ -n "${{ secrets.CME_PASSWORD }}" ]; then
+            echo "mode=real" >> "$GITHUB_OUTPUT"
+          else
+            echo "mode=mock" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Run collector
+        env:
+          CME_EMAIL: ${{ secrets.CME_EMAIL }}
+          CME_PASSWORD: ${{ secrets.CME_PASSWORD }}
+          COLLECTOR_MODE: ${{ steps.mode.outputs.mode }}
+        run: |
+          # Credentials are never echoed; the collector only reports pass/fail.
+          python cme_collector/collect.py \
+            --mode "$COLLECTOR_MODE" \
+            --out "snapshots/$(date -u +%F).json"
+
+      - name: Validate snapshot schema + provenance
+        run: python cme_collector/validate.py "snapshots/$(date -u +%F).json"
+
+      - name: Commit snapshot to data branch
+        run: |
+          git config user.name "cme-collector"
+          git config user.email "actions@users.noreply.github.com"
+          FILE="snapshots/$(date -u +%F).json"
+          git fetch origin data || true
+          git worktree add -f data-wt origin/data 2>/dev/null || \
+            git worktree add -b data data-wt
+          cp "$FILE" "data-wt/$FILE"
+          cd data-wt
+          git add "$FILE"
+          git commit -m "cme snapshot $(date -u +%F) (mode: ${{ steps.mode.outputs.mode }})" || \
+            echo "no changes"
+          git push origin HEAD:data

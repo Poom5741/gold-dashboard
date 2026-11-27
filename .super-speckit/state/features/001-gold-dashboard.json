@@ -1,6 +1,6 @@
 {
   "id": "001-gold-dashboard",
-  "state": "planned",
+  "state": "maker_running",
   "candidate_sha": null,
   "maker": "dev (Hermes, python/backend)",
   "checker": "independent QA subagent (fresh context)",
@@ -51,7 +51,7 @@
   "delivery_contract": "knowledge-v2",
   "gates_contract": "discipline-v1",
   "schema_version": 2,
-  "revision": 21,
+  "revision": 23,
   "prerequisite_receipts": {
     "investigation": {
       "artifact": "evidence/investigation-1.json",
@@ -84,6 +84,10 @@
     "personas": {
       "artifact": ".super-speckit/pipeline/001-gold-dashboard/personas.json",
       "digest": "5544168e2fdc662c8aae9c59301a01af2d7f82122adf71b9c3b3dd3fa10606b6"
+    },
+    "architecture": {
+      "artifact": "specs/001-gold-dashboard/architecture.md",
+      "digest": "eca391ce39788254cb5b3ecd6fedde10e057cd75ca3bbf3dc445e932171cf3b8"
     }
   }
 }
