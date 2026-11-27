@@ -1,0 +1,17 @@
+## 1. What happened last week
+Gold closed the week at 3397.7 (prev close 3700.4, -302.7 w/w). POC 3457.7, VAH 3592.3, VAL 3394.8 (daily-bar approximation). Value area migrated lower vs prior week, without overlap. 4-week regime: Rotational; developing week: n/a.
+Note: contract roll detected (2026-07-31, 2026-09-17, 2026-11-23); structure metrics are roll-adjusted.
+## 2. What is happening this week
+Aggregate bias -60.0 (Strong bearish) at reliability 88.0%. Dimensions used: cot, etf, macro, options, structure.
+## 3. What is driving gold
+10Y real yield +0.01pts w/w (a headwind for gold); broad dollar +1.4% w/w; managed-money net 102942 contracts (20.0 pct of 2026-11-17-window, change -9399 w/w); ETF flows +12t over 5 sessions; 25d risk reversal -1.1 vol pts
+## 4. Which direction has stronger evidence
+structure: -0.7 (reliability 1.0); options: -0.97 (reliability 0.6); macro: -0.36 (reliability 1.0); cot: -0.47 (reliability 0.97); etf: 0.85 (reliability 1.0). Aggregate evidence is strongly bearish.
+## 5. What price levels matter
+VAL 3394.8 / POC 3457.7 / VAH 3592.3; weekly anchored VWAP 3496.2; opening range 3579.1–3718.0.
+## 6. What would invalidate the bias
+acceptance above VAH 3592.3; POC migration higher; real yields breaking their weekly direction; a sharp dollar reversal.
+## 7. What upcoming events could change the bias
+Imported calendar: 2026-12-01 US CPI (high); 2026-12-04 US Nonfarm Payrolls (high).
+---
+Data freshness flags: cot: stale.
