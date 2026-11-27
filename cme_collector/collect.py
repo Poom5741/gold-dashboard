@@ -49,7 +49,9 @@ def collect_real(out: Path) -> dict:
     from playwright.sync_api import sync_playwright
 
     with sync_playwright() as p:
-        browser = p.chromium.launch(headless=True)
+        # CME's Akamai edge resets HTTP/2 connections from headless browsers
+        # (net::ERR_HTTP2_PROTOCOL_ERROR) — force HTTP/1.1.
+        browser = p.chromium.launch(headless=True, args=["--disable-http2"])
         ctx = browser.new_context(locale="en-US")
         page = ctx.new_page()
         # CME SSO: auth.cmegroup.com auto-submits an interstitial before the
@@ -64,12 +66,21 @@ def collect_real(out: Path) -> dict:
         page.click("#loginBtn")
         page.wait_for_load_state("networkidle")
         page.wait_for_timeout(3000)  # settle post-login redirects
-        # Vol2Vol expected-range tool (QuikStrike embed)
-        page.goto(
-            "https://www.cmegroup.com/tools-information/quikstrike/"
-            "vol2vol-expected-range.html"
-        )
-        page.wait_for_load_state("networkidle")
+        # Vol2Vol expected-range tool (QuikStrike embed); retry on transient
+        # protocol errors from CME's edge.
+        for attempt in range(3):
+            try:
+                page.goto(
+                    "https://www.cmegroup.com/tools-information/quikstrike/"
+                    "vol2vol-expected-range.html",
+                    wait_until="domcontentloaded",
+                    timeout=60000,
+                )
+                break
+            except Exception as exc:
+                if attempt == 2:
+                    raise
+                page.wait_for_timeout(5000 * (attempt + 1))
         # NOTE: selectors below are best-effort; CME's DOM changes — verify on
         # first real run and update before trusting output (accepted risk R9).
         tenor = page.locator("select.tenor-selector option").first.get_attribute("value")
