@@ -1,0 +1,9 @@
+{
+  "feature": "001-gold-dashboard",
+  "status": "confirmed",
+  "map": "purpose-map.md",
+  "visual": "purpose-map.html",
+  "confirmed_by": "Poom (via kanban dispatch)",
+  "confirmed_at": "2026-11-27T00:00:00+07:00",
+  "confirmation": "Kanban card t_d058408b dispatched to dev quotes SPEC.md verbatim as canonical and DECISIONS.md records Poom's confirmed decisions (CME browser collector + GitHub Actions, everything else accepted); dispatcher instruction 'work kanban task t_d058408b' = implementation authorization"
+}

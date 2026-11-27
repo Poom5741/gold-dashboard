@@ -1,0 +1,27 @@
+schema_version: 1
+authority: files-and-commands
+generated_from: .super-speckit/state/features/*.json
+features:
+  - id: "001-gold-dashboard"
+    state: "planned"
+    candidate_sha: null
+    maker: "dev (Hermes, python/backend)"
+    checker: "independent QA subagent (fresh context)"
+    matrix: "specs/001-gold-dashboard/matrix.md"
+    purpose_status: "confirmed"
+    purpose_map: ".super-speckit/purpose/001-gold-dashboard/purpose-map.md"
+    grill_status: "not_started"
+    grill_artifact: null
+    route: "unclassified"
+    atlas: null
+    change_story: null
+    latest_handoff: null
+    decision_trail: null
+    verification_harness: null
+    static_review: null
+    corrective_enforcement: null
+    ui_change: false
+    journey_ux_status: "not_required"
+    journey_ux_report: null
+    runs: []
+    bugs: []

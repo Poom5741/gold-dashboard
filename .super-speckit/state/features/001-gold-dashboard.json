@@ -1,0 +1,73 @@
+{
+  "id": "001-gold-dashboard",
+  "state": "planned",
+  "candidate_sha": null,
+  "maker": "dev (Hermes, python/backend)",
+  "checker": "independent QA subagent (fresh context)",
+  "matrix": "specs/001-gold-dashboard/matrix.md",
+  "ui_change": false,
+  "journey_ux": {
+    "status": "not_required",
+    "report": null,
+    "candidate_sha": null
+  },
+  "purpose": {
+    "status": "confirmed",
+    "map": ".super-speckit/purpose/001-gold-dashboard/purpose-map.md",
+    "decision": ".super-speckit/purpose/001-gold-dashboard/decision.json"
+  },
+  "grill": {
+    "status": "not_started",
+    "artifact": null
+  },
+  "route": {
+    "kind": "unclassified",
+    "rationale": null
+  },
+  "atlas": {
+    "path": null
+  },
+  "change_story": {
+    "path": null
+  },
+  "handoff": {
+    "path": null
+  },
+  "decision_trail": {
+    "path": null
+  },
+  "verification_harness": {
+    "path": null
+  },
+  "static_review": {
+    "artifact": null
+  },
+  "corrective_enforcement": {
+    "artifact": null
+  },
+  "runs": [],
+  "bugs": [],
+  "pipeline_contract": "unified-v1",
+  "delivery_contract": "knowledge-v2",
+  "gates_contract": "discipline-v1",
+  "schema_version": 2,
+  "revision": 7,
+  "prerequisite_receipts": {
+    "investigation": {
+      "artifact": "specs/001-gold-dashboard/research-sources.md",
+      "digest": "5deaeaf90ac7b0d5adb428d8a4fd792583eabb97832ccdb68d7266afc7be3670"
+    },
+    "phase-contract": {
+      "artifact": "specs/001-gold-dashboard/phase-contract-P1.md",
+      "digest": "425eacb26012a190928ff4fa2bc585a941cf6d4febdcde45e155a75fe3214e0c"
+    },
+    "research": {
+      "artifact": "specs/001-gold-dashboard/research-sources.md",
+      "digest": "5deaeaf90ac7b0d5adb428d8a4fd792583eabb97832ccdb68d7266afc7be3670"
+    },
+    "baseline-feedback": {
+      "artifact": "specs/001-gold-dashboard/baseline-feedback.md",
+      "digest": "4a9eee8f03ebccf1ad87d15725db8b0da302a2f29b4cd5ee302b0067d51c28c2"
+    }
+  }
+}
