@@ -115,7 +115,7 @@ def build_app(store: Store | None = None, settings: Settings | None = None,
             rows = store.macro(s, as_of, limit=60)
             out[s] = rows
         cot = store.cot(as_of, limit=60)
-        etf = store.manual("etf", "etf_flows", as_of, limit=60)
+        etf = store.manual_kind("etf", as_of, limit=60)
         gc_bars = store.bars("GC=F", as_of, limit=90)
         return {"series": out, "cot": cot, "etf_flows": etf, "gc_bars": gc_bars}
 

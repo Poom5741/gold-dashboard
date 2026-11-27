@@ -95,3 +95,12 @@ def test_weekly_report_lists_known_upcoming_calendar(store, cfg, client):
     r = client.get("/api/report/weekly")
     assert r.status_code == 200
     assert "US Nonfarm Payrolls" in r.text  # future event, known at import time
+
+
+def test_macro_endpoint_returns_imported_etf_flows(store, cfg, client):
+    """Regression (QA run-8): etf flows arrive as series 'SPDR' etc., not 'etf_flows'."""
+    csv = "date,series,tonnes\n2026-11-21,SPDR,4.2\n"
+    assert client.post("/api/import/etf", content=csv.encode()).status_code == 200
+    r = client.get("/api/macro")
+    assert r.status_code == 200
+    assert any(row["series"] == "SPDR" for row in r.json()["etf_flows"])

@@ -107,3 +107,19 @@ def test_label_thresholds():
     assert label_for(19.9, c) == "Neutral"
     assert label_for(-20, c) == "Bearish"
     assert label_for(-60, c) == "Strong bearish"
+
+
+def test_manual_oi_imports_reach_options_dimension(store, cfg):
+    """Regression (QA run-8): OI imports store series 'strike_<N>' — the options
+    dimension must aggregate them, not query a 'net_oi' series that never exists."""
+    from app.collectors import manual_import
+
+    seed_world(store)
+    csv = ("date,strike,call_oi,put_oi\n"
+           "2026-11-18,4000,5000,8000\n2026-11-18,4100,3000,2000\n"
+           "2026-11-20,4000,5200,9000\n2026-11-20,4100,2800,1800\n")
+    assert manual_import.import_text(store, "oi", csv) == 4
+    b = compute_bias(store, "2026-11-21T00:00:00+00:00", cfg, now="2026-11-21T06:00:00+00:00")
+    opt = b["dimensions"]["options"]
+    assert opt["score"] is not None
+    assert opt["drivers"]["oi"]["net_change"] == pytest.approx(-800.0)  # daily nets -2000 -> -2800

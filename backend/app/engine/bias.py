@@ -84,21 +84,12 @@ def dimension_options(store: Store, as_of: str, cfg: dict, now) -> dict:
             parts.append((combine(skew_components), sub["skew"] * fac_tv))
         drivers["skew"] = {"rr25": rr, "atm_iv": iv, "freshness": freshness(
             "tv_options", last_opt, cfg["staleness_days"], now)}
-    # sub-score oi: net call-put OI from manual imports
-    oi_rows = store.manual("oi", "net_oi", as_of, limit=10) or []
-    # aggregate per-strike rows into daily net OI if present
+    # sub-score oi: net call-put OI from manual imports (rows are per-strike,
+    # series 'strike_<N>'; aggregate to daily net across all strikes)
+    oi_rows = store.manual_kind("oi", as_of, limit=400) or []
     daily_net: dict[str, float] = {}
-    for r in store.manual("oi", "net_oi_daily", as_of, limit=10):
-        daily_net[r["as_of"]] = r["value"]
-    if not daily_net and oi_rows:
-        strike_rows = []
-        for s in {r["series"] for r in oi_rows}:
-            strike_rows.append(store.manual("oi", s, as_of, limit=10))
-        by_date: dict[str, float] = {}
-        for series_rows in strike_rows:
-            for r in series_rows:
-                by_date[r["as_of"]] = by_date.get(r["as_of"], 0.0) + r["value"]
-        daily_net = by_date
+    for r in oi_rows:
+        daily_net[r["as_of"]] = daily_net.get(r["as_of"], 0.0) + r["value"]
     if daily_net:
         ordered = sorted(daily_net.items())
         delta = ordered[-1][1] - (ordered[0][1] if len(ordered) > 1 else 0.0)
