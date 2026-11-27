@@ -53,21 +53,41 @@ def collect_real(out: Path) -> dict:
         # (net::ERR_HTTP2_PROTOCOL_ERROR) — force HTTP/1.1.
         browser = p.chromium.launch(headless=True, args=["--disable-http2"])
         ctx = browser.new_context(locale="en-US")
-        page = ctx.new_page()
         # CME SSO: auth.cmegroup.com auto-submits an interstitial before the
         # real form renders. Verified field ids (2026-11-27): #user / #pwd / #loginBtn.
-        page.goto(
-            "https://login.cmegroup.com/sso/accountstatus/showAuth.action",
-            wait_until="domcontentloaded",
-        )
-        page.wait_for_selector("#user", timeout=60000)
-        page.fill("#user", email)
-        page.fill("#pwd", password)
-        page.click("#loginBtn")
-        # cmegroup.com keeps polling XHRs after login — networkidle never
-        # fires; settle with domcontentloaded + fixed wait instead.
-        page.wait_for_load_state("domcontentloaded", timeout=60000)
-        page.wait_for_timeout(8000)  # settle post-login redirects
+        # Akamai randomly challenges datacenter runner IPs — retry the whole
+        # login on a fresh page; keep a debug screenshot on each failure.
+        last_err = None
+        page = ctx.new_page()  # page survives the loop for later navigation
+        for attempt in range(3):
+            page = ctx.new_page()
+            try:
+                page.goto(
+                    "https://login.cmegroup.com/sso/accountstatus/showAuth.action",
+                    wait_until="domcontentloaded",
+                    timeout=60000,
+                )
+                page.wait_for_selector("#user", timeout=45000)
+                page.fill("#user", email)
+                page.fill("#pwd", password)
+                page.click("#loginBtn")
+                # cmegroup.com keeps polling XHRs after login — networkidle
+                # never fires; settle with domcontentloaded + fixed wait.
+                page.wait_for_load_state("domcontentloaded", timeout=60000)
+                page.wait_for_timeout(8000)  # settle post-login redirects
+                last_err = None
+                break
+            except Exception as exc:
+                last_err = exc
+                try:
+                    page.screenshot(
+                        path=f"debug-shots/login-attempt{attempt + 1}.png",
+                        full_page=True,
+                    )
+                except Exception:
+                    pass
+        if last_err:
+            raise last_err
         # Vol2Vol expected-range tool (QuikStrike embed); retry on transient
         # protocol errors from CME's edge.
         for attempt in range(3):
