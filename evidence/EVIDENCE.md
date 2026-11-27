@@ -57,3 +57,8 @@ gold-frontend	Up 23 minutes	127.0.0.1:8601->3000/tcp
 - MEDIUM fixed: /api/macro etf_flows reads all etf series
 - pytest:
 40 passed in 8.60s
+
+## final dashboard state
+- frontend 200; ETF flows + calendar rendered (SPEC §6 complete)
+- bias live: all 5 dimensions, reliability 0.995
+- ports: backend 127.0.0.1:8600, frontend 127.0.0.1:8601
