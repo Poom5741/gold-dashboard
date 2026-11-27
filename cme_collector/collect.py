@@ -71,10 +71,16 @@ def collect_real(out: Path) -> dict:
                 page.fill("#user", email)
                 page.fill("#pwd", password)
                 page.click("#loginBtn")
-                # cmegroup.com keeps polling XHRs after login — networkidle
-                # never fires; settle with domcontentloaded + fixed wait.
+                # cmegroup.com keeps polling XHRs — networkidle never fires.
+                # Ping Identity SSO (startSSO.ping) takes a while to bounce
+                # back to www.cmegroup.com; poll until we actually leave auth.
                 page.wait_for_load_state("domcontentloaded", timeout=60000)
-                page.wait_for_timeout(8000)  # settle post-login redirects
+                for _ in range(60):
+                    u = page.url
+                    if "auth.cmegroup.com" not in u and "login.cmegroup.com" not in u:
+                        break
+                    page.wait_for_timeout(1000)
+                page.wait_for_timeout(5000)  # settle post-login app init
                 last_err = None
                 break
             except Exception as exc:
