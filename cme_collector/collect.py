@@ -97,6 +97,11 @@ def collect_real(out: Path) -> dict:
         # DEBUG: capture post-login state (URL + screenshot) every run
         try:
             print("POST_LOGIN_URL:", page.url)
+            print("POST_LOGIN_TITLE:", page.title())
+            body = page.evaluate(
+                "() => document.body ? document.body.innerText.slice(0, 400) : ''"
+            )
+            print("POST_LOGIN_BODY:", body.replace("\n", " | ")[:400])
             page.screenshot(path="debug-shots/after-login.png", full_page=True)
         except Exception:
             pass
