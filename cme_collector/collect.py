@@ -52,7 +52,14 @@ def collect_real(out: Path) -> dict:
         # CME's Akamai edge resets HTTP/2 connections from headless browsers
         # (net::ERR_HTTP2_PROTOCOL_ERROR) — force HTTP/1.1.
         browser = p.chromium.launch(headless=True, args=["--disable-http2"])
-        ctx = browser.new_context(locale="en-US")
+        ctx = browser.new_context(
+            locale="en-US",
+            user_agent=(
+                "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
+                "(KHTML, like Gecko) Chrome/158.0.0.0 Safari/537.36"
+            ),
+            viewport={"width": 1440, "height": 900},
+        )
         # CME SSO: auth.cmegroup.com auto-submits an interstitial before the
         # real form renders. Verified field ids (2026-11-27): #user / #pwd / #loginBtn.
         # Akamai randomly challenges datacenter runner IPs — retry the whole
