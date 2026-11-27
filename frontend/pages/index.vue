@@ -60,6 +60,17 @@
       </div>
       <div id="yields-chart" class="chart"></div>
       <div id="cot-chart" class="chart"></div>
+      <div class="grid3">
+        <div class="stat"><span>ETF 5-session</span><b>{{ etfSum }}</b></div>
+        <div class="stat" v-if="etfRows.length"><span>latest</span><b>{{ etfRows[etfRows.length - 1]?.series }} {{ f(etfRows[etfRows.length - 1]?.value, 't') }}</b></div>
+        <div class="stat" v-if="!etfRows.length"><span>ETF flows</span><b>manual import</b></div>
+      </div>
+      <ul class="cal" v-if="calRows.length">
+        <li v-for="c in calRows" :key="c.date + c.event">
+          {{ c.date }} {{ c.event }} <em>({{ c.impact || 'n/a' }})</em>
+        </li>
+      </ul>
+      <p class="hint" v-else>Calendar: no upcoming events imported (manual CSV import).</p>
     </section>
 
     <section class="card" id="report">
@@ -120,6 +131,18 @@ function lastOf(series: string): string {
   const rows = macro.value?.series?.[series]
   return rows?.length ? String(rows[rows.length - 1].value) : 'n/a'
 }
+
+const etfRows = computed<any[]>(() => macro.value?.etf_flows || [])
+const calRows = computed<any[]>(() => macro.value?.calendar || [])
+const etfSum = computed(() => {
+  const rows = etfRows.value
+  if (!rows.length) return 'n/a'
+  const byDate: Record<string, number> = {}
+  for (const r of rows) byDate[r.as_of] = (byDate[r.as_of] || 0) + Number(r.value || 0)
+  const dates = Object.keys(byDate).sort()
+  const sum = dates.slice(-5).reduce((a, d) => a + byDate[d], 0)
+  return `${sum >= 0 ? '+' : ''}${Math.round(sum * 10) / 10}t`
+})
 
 declare const LightweightCharts: any
 declare const echarts: any
@@ -263,6 +286,10 @@ h2 small { color: #8b93a1; font-weight: 400; }
 .fresh { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 10px; }
 .pill { font-size: .7rem; padding: 2px 8px; border-radius: 999px; background: #1a1e26; }
 .pill.ok { color: #7dcea0; } .pill.stale { color: #f4d03f; } .pill.missing, .pill.failed { color: #ec7063; }
+.cal { list-style: none; margin: 8px 0 0; padding: 0; font-size: .85rem; }
+.cal li { padding: 3px 0; border-bottom: 1px dashed #1a1e26; }
+.cal em { color: #f4d03f; font-style: normal; font-size: .75rem; }
+.hint { color: #8a93a5; font-size: .8rem; }
 .chart { height: 260px; margin-top: 10px; }
 .report { white-space: pre-wrap; font-family: ui-monospace, monospace; font-size: .8rem;
           line-height: 1.5; }

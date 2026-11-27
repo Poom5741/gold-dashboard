@@ -116,8 +116,10 @@ def build_app(store: Store | None = None, settings: Settings | None = None,
             out[s] = rows
         cot = store.cot(as_of, limit=60)
         etf = store.manual_kind("etf", as_of, limit=60)
+        calendar = store.calendar_upcoming(as_of, limit=30)
         gc_bars = store.bars("GC=F", as_of, limit=90)
-        return {"series": out, "cot": cot, "etf_flows": etf, "gc_bars": gc_bars}
+        return {"series": out, "cot": cot, "etf_flows": etf,
+                "calendar": calendar, "gc_bars": gc_bars}
 
     @app.get("/api/snapshots")
     def snapshots_endpoint(kind: str | None = None, limit: int = 50):
