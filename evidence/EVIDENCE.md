@@ -51,3 +51,9 @@ per-dim reliability: {'structure': 1.0, 'options': 0.6, 'macro': 1.0, 'cot': 0.9
 ## docker
 gold-backend	Up 2 minutes (healthy)	127.0.0.1:8600->8000/tcp
 gold-frontend	Up 23 minutes	127.0.0.1:8601->3000/tcp
+
+## QA round (run-8 fixes verified)
+- HIGH fixed: OI manual imports now reach options dimension (net_change -400, reliability 0.995 live)
+- MEDIUM fixed: /api/macro etf_flows reads all etf series
+- pytest:
+40 passed in 8.60s
