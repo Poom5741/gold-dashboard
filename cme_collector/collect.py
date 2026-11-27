@@ -101,6 +101,22 @@ def collect_real(out: Path) -> dict:
             page.screenshot(path="debug-shots/after-login.png", full_page=True)
         except Exception:
             pass
+        # The Ping interstitial (startSSO.ping -> saml_login) sometimes fails
+        # to auto-forward under HTTP/1.1. Force the SAML handshake page
+        # directly — the Ping session cookie completes it and lands us
+        # logged-in on www.cmegroup.com.
+        try:
+            if "auth.cmegroup.com" in page.url or "login.cmegroup.com" in page.url:
+                page.goto(
+                    "https://www.cmegroup.com/content/login/saml_login",
+                    wait_until="domcontentloaded",
+                    timeout=60000,
+                )
+                page.wait_for_timeout(8000)
+                print("AFTER_SAML_URL:", page.url)
+                page.screenshot(path="debug-shots/after-saml.png", full_page=True)
+        except Exception as exc:
+            print("SAML_FORCE_ERR:", str(exc)[:200])
         # Vol2Vol expected-range tool (QuikStrike embed); retry on transient
         # protocol errors from CME's edge.
         for attempt in range(3):
