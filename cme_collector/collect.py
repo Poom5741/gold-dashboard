@@ -88,6 +88,12 @@ def collect_real(out: Path) -> dict:
                     pass
         if last_err:
             raise last_err
+        # DEBUG: capture post-login state (URL + screenshot) every run
+        try:
+            print("POST_LOGIN_URL:", page.url)
+            page.screenshot(path="debug-shots/after-login.png", full_page=True)
+        except Exception:
+            pass
         # Vol2Vol expected-range tool (QuikStrike embed); retry on transient
         # protocol errors from CME's edge.
         for attempt in range(3):
@@ -101,6 +107,13 @@ def collect_real(out: Path) -> dict:
                 break
             except Exception as exc:
                 if attempt == 2:
+                    try:
+                        page.screenshot(
+                            path=f"debug-shots/vol2vol-fail.png", full_page=True
+                        )
+                        print("V2V_URL:", page.url)
+                    except Exception:
+                        pass
                     raise
                 page.wait_for_timeout(5000 * (attempt + 1))
         # NOTE: selectors below are best-effort; CME's DOM changes — verify on
