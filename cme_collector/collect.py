@@ -52,11 +52,18 @@ def collect_real(out: Path) -> dict:
         browser = p.chromium.launch(headless=True)
         ctx = browser.new_context(locale="en-US")
         page = ctx.new_page()
-        page.goto("https://login.cmegroup.com/sso/login")
-        page.fill("#username", email)
-        page.fill("#password", password)
-        page.click("button[type=submit]")
+        # CME SSO: auth.cmegroup.com auto-submits an interstitial before the
+        # real form renders. Verified field ids (2026-11-27): #user / #pwd / #loginBtn.
+        page.goto(
+            "https://login.cmegroup.com/sso/accountstatus/showAuth.action",
+            wait_until="domcontentloaded",
+        )
+        page.wait_for_selector("#user", timeout=60000)
+        page.fill("#user", email)
+        page.fill("#pwd", password)
+        page.click("#loginBtn")
         page.wait_for_load_state("networkidle")
+        page.wait_for_timeout(3000)  # settle post-login redirects
         # Vol2Vol expected-range tool (QuikStrike embed)
         page.goto(
             "https://www.cmegroup.com/tools-information/quikstrike/"
