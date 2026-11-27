@@ -64,8 +64,10 @@ def collect_real(out: Path) -> dict:
         page.fill("#user", email)
         page.fill("#pwd", password)
         page.click("#loginBtn")
-        page.wait_for_load_state("networkidle")
-        page.wait_for_timeout(3000)  # settle post-login redirects
+        # cmegroup.com keeps polling XHRs after login — networkidle never
+        # fires; settle with domcontentloaded + fixed wait instead.
+        page.wait_for_load_state("domcontentloaded", timeout=60000)
+        page.wait_for_timeout(8000)  # settle post-login redirects
         # Vol2Vol expected-range tool (QuikStrike embed); retry on transient
         # protocol errors from CME's edge.
         for attempt in range(3):
