@@ -71,16 +71,12 @@ def collect_real(out: Path) -> dict:
                 page.fill("#user", email)
                 page.fill("#pwd", password)
                 page.click("#loginBtn")
-                # cmegroup.com keeps polling XHRs — networkidle never fires.
-                # Ping Identity SSO (startSSO.ping) takes a while to bounce
-                # back to www.cmegroup.com; poll until we actually leave auth.
+                # Ping Identity SSO: after submit the page sits on startSSO.ping
+                # ("Loading .../saml_login") — credentials accepted, SAML in
+                # flight. Don't wait for it; navigating to the tool page lets
+                # the SSO chain complete through redirects.
                 page.wait_for_load_state("domcontentloaded", timeout=60000)
-                for _ in range(60):
-                    u = page.url
-                    if "auth.cmegroup.com" not in u and "login.cmegroup.com" not in u:
-                        break
-                    page.wait_for_timeout(1000)
-                page.wait_for_timeout(5000)  # settle post-login app init
+                page.wait_for_timeout(5000)
                 last_err = None
                 break
             except Exception as exc:
@@ -113,7 +109,7 @@ def collect_real(out: Path) -> dict:
                     "https://www.cmegroup.com/tools-information/quikstrike/"
                     "vol2vol-expected-range.html",
                     wait_until="domcontentloaded",
-                    timeout=60000,
+                    timeout=90000,
                 )
                 break
             except Exception as exc:
